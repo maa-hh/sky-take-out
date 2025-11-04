@@ -26,4 +26,6 @@ public interface EmployeeMapper  {
 
 
     void startOrStop(Employee employee);
+    @Select("select * from employee where id=#{id}")
+    Employee getById(Long id);
 }
