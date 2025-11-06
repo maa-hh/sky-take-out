@@ -10,6 +10,12 @@
             (#{flavor.dishId}, #{flavor.name}, #{flavor.value})
         </foreach>
     </insert>
+    <delete id="deleteBath">
+        delete from dish_flavor where dish_id in
+        <foreach collection="dish" item="d" separator="," open="(" close=")">
+            #{d}
+        </foreach>
+    </delete>
 
     <select id="pageQuery" resultType="com.sky.vo.DishVO">
         select d.*, c.name
