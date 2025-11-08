@@ -13,7 +13,7 @@ spring:
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
   redis:
-    host: 192.168.0.104
+    host: 192.168.75.129
     password: 123456
     port: 6379
     database: 0
@@ -38,11 +38,15 @@ sky:
     admin-secret-key: itcast
     admin-ttl: 7200000
     admin-token-name: token
+    user-secret-key: user
+    user-ttl: 7200000
+    user-token-name: authentication
 
   alioss:
     endpoint: ${sky.aliyun.oss.endpoint}
     access-key-id: ${sky.aliyun.oss.key-id}
     access-key-secret: ${sky.aliyun.oss.key-secret}
     bucket-name: ${sky.aliyun.oss.bucket-name}
-
-
+  wechat:
+    appid:  ${sky.weixin.id}
+    secret: ${sky.weixin.secret}
