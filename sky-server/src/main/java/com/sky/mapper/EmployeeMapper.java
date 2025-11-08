@@ -29,7 +29,7 @@ public interface EmployeeMapper  {
 
 
     @AutoFill(value = OperationType.UPDATE)
-    void startOrStop(Employee employee);
+    void updayeById(Employee employee);
     @Select("select * from employee where id=#{id}")
     Employee getById(Long id);
 }

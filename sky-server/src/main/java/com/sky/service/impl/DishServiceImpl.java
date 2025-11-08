@@ -50,11 +50,12 @@ public class DishServiceImpl implements DishService {
     @Override
     public PageResult page(DishPageQueryDTO dishDTO) {
         PageHelper.startPage(dishDTO.getPage(),dishDTO.getPageSize());
-        Page<DishVO> page=dishFlavorMapper.pageQuery(dishDTO);
+        Page<DishVO> page=dishMapper.pageQuery(dishDTO);
         return new PageResult(page.getTotal(),page.getResult());
     }
 
     @Override
+    //2条以上sql就要启用事务管理原子性
     @Transactional
     public void deleteBatch(List<Long> ids) {
         for(Long id:ids){
@@ -65,7 +66,7 @@ public class DishServiceImpl implements DishService {
         List<Long> mealids=setmealMapper.getDish(ids);
         if(mealids!=null||mealids.size()>0)
             throw new DeletionNotAllowedException("有套餐关联不允许删除");
-        dishFlavorMapper.deleteBath(ids);
+        dishFlavorMapper.deleteBatch(ids);
         dishMapper.deleteBatch(ids);
     }
 
@@ -80,6 +81,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish=new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
@@ -87,7 +89,7 @@ public class DishServiceImpl implements DishService {
 
         List<Long> dishId=new ArrayList<>();
         dishId.add(dish.getId());
-        dishFlavorMapper.deleteBath(dishId);
+        dishFlavorMapper.deleteBatch(dishId);
 
         List<DishFlavor> dishFlavorList=dishDTO.getFlavors();
         if(dishFlavorList==null|| dishFlavorList.isEmpty()) return ;

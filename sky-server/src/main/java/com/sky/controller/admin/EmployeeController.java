@@ -41,6 +41,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/login")
+    @ApiOperation(value = "员工登录功能")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
@@ -84,6 +85,7 @@ public class EmployeeController {
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
     public Result<PageResult> pageQuery(EmployeePageQueryDTO employeePageQueryDTO){
+        //paheresult自定义数据类型 total和对应每条记录
         PageResult pageResult=employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
     }

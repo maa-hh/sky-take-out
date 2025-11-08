@@ -73,9 +73,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee= new Employee();
         BeanUtils.copyProperties(employeeDTO,employee);
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        employee.setStatus(StatusConstant.ENABLE);
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
-//        employee.setStatus(StatusConstant.ENABLE);
+//
 //        //TODO
 //        employee.setCreateUser(BaseContext.getCurrentId());
 //        employee.setUpdateUser(BaseContext.getCurrentId());
@@ -84,6 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+        //当前查询页码和每页数量，后面会自动在aql语句补limit语句
         PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
         Page<Employee> page=employeeMapper.pageQuery(employeePageQueryDTO);
         return new PageResult(page.getTotal(),page.getResult());
@@ -92,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void startOrStop(Integer status, Long id) {
         Employee employee=Employee.builder().status(status).id(id).build();
-        employeeMapper.startOrStop(employee);
+        employeeMapper.updayeById(employee);
     }
 
     @Override
@@ -108,7 +110,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(employeeDTO,employee);
 //        employee.setUpdateUser(BaseContext.getCurrentId());
 //        employee.setUpdateTime(LocalDateTime.now());
-        employeeMapper.startOrStop(employee);
+        employeeMapper.updayeById(employee);
     }
 
 }

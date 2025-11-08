@@ -112,6 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id
      */
     public void startOrStop(Integer status, Long id) {
+        //添加builder注解就可以用构建器进行构建
         Category category = Category.builder()
                 .id(id)
                 .status(status)

@@ -5,6 +5,9 @@ import com.sky.context.BaseContext;
 import com.sky.properties.JwtProperties;
 import com.sky.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,9 +54,34 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             log.info("当前员工id：", empId);
             //3、通过，放行
             return true;
-        } catch (Exception ex) {
-            //4、不通过，响应401状态码
+        } catch (ExpiredJwtException e) {
+            log.warn("JWT校验失败：令牌过期，token={}", token);
             response.setStatus(401);
+            response.getWriter().write("Token expired");
+            return false;
+
+        } catch (SignatureException e) {
+            log.warn("JWT校验失败：签名无效，token={}", token);
+            response.setStatus(401);
+            response.getWriter().write("Invalid token signature");
+            return false;
+
+        } catch (MalformedJwtException e) {
+            log.warn("JWT校验失败：格式错误，token={}", token);
+            response.setStatus(401);
+            response.getWriter().write("Malformed token");
+            return false;
+
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT校验失败：token为空");
+            response.setStatus(401);
+            response.getWriter().write("Token missing");
+            return false;
+
+        } catch (Exception e) {
+            log.error("JWT校验失败：未知错误", e);
+            response.setStatus(401);
+            response.getWriter().write("Token verification failed");
             return false;
         }
     }

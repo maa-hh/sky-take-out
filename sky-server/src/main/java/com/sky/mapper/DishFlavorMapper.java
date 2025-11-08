@@ -13,9 +13,7 @@ import java.util.List;
 public interface DishFlavorMapper {
     void insertBatch(List<DishFlavor> dishFlavorList);
 
-    Page<DishVO> pageQuery(DishPageQueryDTO dishDTO);
-
-    void deleteBath(List<Long> ids);
+    void deleteBatch(List<Long> ids);
     @Select("select * from dish_flavor where dish_id=#{id}")
     List<DishFlavor> getByDishId(Long id);
 }

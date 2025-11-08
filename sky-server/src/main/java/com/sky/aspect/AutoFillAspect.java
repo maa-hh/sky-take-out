@@ -21,6 +21,7 @@ import java.util.Date;
 @Aspect
 @Component
 public class AutoFillAspect {
+    //任意返回值类型的com.sky.mapper包下任意类 任意函数名任意参数
     @Pointcut("execution(* com.sky.mapper.*.*(..))&& @annotation(com.sky.annotation.AutoFill)")
     public void autoFillPointCut() {}
 
@@ -39,24 +40,24 @@ public class AutoFillAspect {
         }
         Object[]args=joinPoint.getArgs();
         if(args==null||args.length==0) return ;
-        Object employee= args[0];
+        Object object= args[0];//获取参数列表
         LocalDateTime date= LocalDateTime.now();
         Long id= BaseContext.getCurrentId();
         if(autoFill.value()== OperationType.INSERT){
-            Method setCreateTime=employee.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME,LocalDateTime.class);
-            Method setCreateUser=employee.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER,Long.class);
-            Method setUpdateTime=employee.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalDateTime.class);
-            Method setUpdateUser=employee.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
-            setCreateUser.invoke(employee,id);
-            setCreateTime.invoke(employee,date);
-            setUpdateUser.invoke(employee,id);
-            setUpdateTime.invoke(employee,date);
+            Method setCreateTime=object.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_TIME,LocalDateTime.class);
+            Method setCreateUser=object.getClass().getDeclaredMethod(AutoFillConstant.SET_CREATE_USER,Long.class);
+            Method setUpdateTime=object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalDateTime.class);
+            Method setUpdateUser=object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
+            setCreateUser.invoke(object,id);
+            setCreateTime.invoke(object,date);
+            setUpdateUser.invoke(object,id);
+            setUpdateTime.invoke(object,date);
         }
         else if(autoFill.value()== OperationType.UPDATE){
-            Method setUpdateTime=employee.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalDateTime.class);
-            Method setUpdateUser=employee.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
-            setUpdateUser.invoke(employee,id);
-            setUpdateTime.invoke(employee,date);
+            Method setUpdateTime=object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_TIME,LocalDateTime.class);
+            Method setUpdateUser=object.getClass().getDeclaredMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
+            setUpdateUser.invoke(object,id);
+            setUpdateTime.invoke(object,date);
         }
     }
 

@@ -10,29 +10,11 @@
             (#{flavor.dishId}, #{flavor.name}, #{flavor.value})
         </foreach>
     </insert>
-    <delete id="deleteBath">
+    <delete id="deleteBatch">
         delete from dish_flavor where dish_id in
-        <foreach collection="dish" item="d" separator="," open="(" close=")">
-            #{d}
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
         </foreach>
     </delete>
-
-    <select id="pageQuery" resultType="com.sky.vo.DishVO">
-        select d.*, c.name
-        from dish d
-        left join category c on d.category_id = c.id
-        <where>
-            <if test="name != null and name != ''">
-                and d.name like concat('%', #{name}, '%')
-            </if>
-            <if test="categoryId != null and categoryId != ''">
-                and d.category_id = #{categoryId}
-            </if>
-            <if test="status != null and status != ''">
-                and d.status = #{status}
-            </if>
-        </where>
-        order by d.create_time desc
-    </select>
 
 </mapper>
