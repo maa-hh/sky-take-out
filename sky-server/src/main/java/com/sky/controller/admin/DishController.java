@@ -24,7 +24,7 @@ public class DishController {
     DishService dishService;
     @PostMapping
     @ApiOperation(value = "新增菜品")
-    public Result<String> save(DishDTO dishDTO){
+    public Result<String> save(@RequestBody DishDTO dishDTO){
         dishService.saveWithFlavor(dishDTO);
         return Result.success();
     }

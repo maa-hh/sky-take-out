@@ -26,18 +26,6 @@
             <if test="status != null">
                 status = #{status},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
-            </if>
-            <if test="createUser != null">
-                create_user = #{createUser},
-            </if>
-            <if test="updateUser != null">
-                update_user = #{updateUser},
-            </if>
         </set>
         where id = #{id}
     </update>
@@ -46,12 +34,6 @@
         <where>
             <if test="name !=null and name !=''">
                 and name like concat('%',#{name},'%')
-            </if>
-            <if test="status != null and status !=''">
-                AND status = #{status}
-            </if>
-            <if test="sex != null and sex !=''">
-               and sex = #{sex}
             </if>
         </where>
         order by create_time asc
