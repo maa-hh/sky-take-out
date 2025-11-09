@@ -23,16 +23,25 @@ public class CommonController {
     AliOssUtil aliOssUtil;
     @PostMapping("/upload")
     @ApiOperation("上传至阿里云OSS")
-    public Result<String> upload(MultipartFile file)  {
-        log.info("文件上传：{}",file);
-        String ordinalname= file.getName().substring(file.getName().lastIndexOf("."));
-        String name= UUID.randomUUID()+ordinalname;
+    public Result<String> upload(MultipartFile file) {
+        log.info("文件上传：{}", file.getOriginalFilename());
+
+        // 获取文件原始名和后缀
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || !originalFilename.contains(".")) {
+            return Result.error("文件名不合法");
+        }
+
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String newName = UUID.randomUUID() + suffix;
+
         try {
-            aliOssUtil.upload(file.getBytes(), name);
-            return Result.success(name);
+            aliOssUtil.upload(file.getBytes(), newName);
+            return Result.success(newName);
         } catch (IOException e) {
-            log.info("上传失败");
-            return Result.error("error");
+            log.error("上传失败：", e);
+            return Result.error("上传失败");
         }
     }
+
 }
