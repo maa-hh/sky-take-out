@@ -31,4 +31,5 @@ public interface DishMapper {
     @AutoFill(value = OperationType.UPDATE)
     void update(Dish dish);
     Page<DishVO> pageQuery(DishPageQueryDTO dishDTO);
+    List<Dish> list(Dish dish);
 }
