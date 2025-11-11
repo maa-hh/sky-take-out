@@ -61,4 +61,18 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCartMapper.insert(shoppingCart);
         }
     }
+
+    @Override
+    public List<ShoppingCart> show() {
+        ShoppingCart shoppingCart=new ShoppingCart();
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        return shoppingCartMapper.get(shoppingCart);
+    }
+
+    @Override
+    public void deleteById() {
+        ShoppingCart shoppingCart=new ShoppingCart();
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        shoppingCartMapper.delete(shoppingCart);
+    }
 }
