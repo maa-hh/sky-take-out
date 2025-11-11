@@ -50,12 +50,6 @@ public class OrderServiceImpl implements OrderService {
         List<ShoppingCart> shoppingCarts = shoppingCartMapper.get(shoppingCart);
         if(shoppingCarts==null||shoppingCarts.size()==0)
             throw new ShoppingCartBusinessException("购物车商品为空");
-        int number =0;
-        BigDecimal amount=BigDecimal.valueOf(0);
-        for(ShoppingCart shoppingCart1:shoppingCarts){
-            number+=shoppingCart1.getNumber();
-            amount.add(shoppingCart1.getAmount());
-        }
 
         Orders orders=new Orders();
         BeanUtils.copyProperties(ordersSubmitDTO,orders);
@@ -66,8 +60,6 @@ public class OrderServiceImpl implements OrderService {
         orders.setPhone(addressBook.getPhone());
         orders.setUserId(BaseContext.getCurrentId());
         orders.setConsignee(addressBook.getConsignee());
-        orders.setAmount(amount);
-        orders.setNumber(String.valueOf(number));
         orders.setAddress(addressBook.getDetail());
         orderMapper.insert(orders);
 
