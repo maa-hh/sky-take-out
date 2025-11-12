@@ -40,4 +40,10 @@ public class Ordercontroller {
         log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
     }
+    @GetMapping("/reminder/{id}")
+    @ApiOperation(value = "催单提醒")
+    public Result reminder(@PathVariable Long id){
+        orderService.reminder(id);
+        return Result.success();
+    }
 }
