@@ -50,3 +50,10 @@ sky:
   wechat:
     appid:  ${sky.weixin.id}
     secret: ${sky.weixin.secret}
+    mchid:
+    mchSerialNo:
+    KeyFilePath:
+    apiV3Key:
+    weChatPayCertFilePath:
+    notifyUrl:
+    refundNotifyUrl:
