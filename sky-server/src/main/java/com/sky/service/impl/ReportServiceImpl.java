@@ -1,10 +1,13 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
+import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -26,6 +30,8 @@ public class ReportServiceImpl implements ReportService {
     OrderMapper orderMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    OrderDetailMapper orderDetailMapper;
     @Override
     public TurnoverReportVO turnoverStatistics(LocalDate begin, LocalDate end) {
         TurnoverReportVO turnoverReportVO=new TurnoverReportVO();
@@ -115,5 +121,23 @@ public class ReportServiceImpl implements ReportService {
         else
             orderReportVO.setOrderCompletionRate(realsum*1.0/total);
         return orderReportVO;
+    }
+
+    @Override
+    public SalesTop10ReportVO salesTop10Statistics(LocalDate begin, LocalDate end) {
+        List<GoodsSalesDTO> goodsSalesDTO;
+        goodsSalesDTO=orderDetailMapper.dishsalsenum(LocalDateTime.of(begin,LocalTime.MIN),LocalDateTime.of(end,LocalTime.MAX));
+        List<String> name;
+        List<Integer> num;
+//        for(GoodsSalesDTO dto:goodsSalesDTO){
+//            name.add(dto.getName());
+//            num.add(dto.getNumber());
+//        }
+        name=goodsSalesDTO.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList());
+        num=goodsSalesDTO.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList());
+        return SalesTop10ReportVO.builder().
+                nameList(StringUtils.join(name,","))
+                .numberList(StringUtils.join(num,","))
+                .build();
     }
 }
