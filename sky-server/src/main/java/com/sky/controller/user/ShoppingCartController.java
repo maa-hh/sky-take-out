@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("user/shoppingcart")
+@RequestMapping("user/shoppingCart")
 @Api(tags="购物车")
 @Slf4j
 public class ShoppingCartController {
@@ -26,14 +26,14 @@ public class ShoppingCartController {
         shoppingCartService.add(shoppingCartDTO);
         return Result.success();
     }
-    @GetMapping("")
+    @GetMapping("/list")
     @ApiOperation(value = "查看该用户购物车内容")
     public Result<List<ShoppingCart>> show(){
         List<ShoppingCart> shoppingCarts=shoppingCartService.show();
         return Result.success(shoppingCarts);
 
     }
-    @DeleteMapping("")
+    @DeleteMapping("/clean")
     @ApiOperation(value = "清空购物车")
     public Result delete (){
         shoppingCartService.deleteById();

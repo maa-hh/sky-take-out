@@ -45,7 +45,7 @@
             #{item.setmealId},
             #{item.dishFlavor},
             #{item.number},
-            #{ite.amount},
+            #{item.amount},
             #{item.image})
     </foreach>
 

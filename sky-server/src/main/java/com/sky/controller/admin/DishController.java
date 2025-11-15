@@ -1,7 +1,9 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,10 +52,23 @@ public class DishController {
     }
     @GetMapping("/{id}")
     @ApiOperation(value = "根据菜品id回显信息")
-    public Result<DishVO> getDishId(@PathVariable Long id){
+    public Result<DishVO> getDishId(Long categoryId){
         log.info("");
-        DishVO dishVO= dishService.getDishId(id);
+        DishVO dishVO= dishService.getDishId(categoryId);
         return Result.success(dishVO);
+    }
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    @Cacheable(cacheNames = "dishcache",key = "#categoryId")
+    public Result<List<DishVO>> list(Long categoryId) {
+        String key="dish_id"+categoryId;
+        List<DishVO> list=(List<DishVO>) redisTemplate.opsForValue().get(key);
+        if(list!=null&&!list.isEmpty()) return Result.success(list);
+        Dish dish = new Dish();
+        dish.setCategoryId(categoryId);
+        dish.setStatus(StatusConstant.ENABLE);//查询起售中的菜品
+        list= dishService.listWithFlavor(dish);
+        return Result.success(list);
     }
     @PutMapping()
     @ApiOperation(value = "修改菜品及其口味")

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class Ordercontroller {
     @Autowired
     OrderService orderService;
-    @PostMapping("")
+    @PostMapping("/submit")
     @ApiOperation(value = "下单订单生成")
     public Result<OrderSubmitVO> order(@RequestBody OrdersSubmitDTO ordersSubmitDTO){
         OrderSubmitVO orderSubmitVO=orderService.order(ordersSubmitDTO);
@@ -38,6 +38,7 @@ public class Ordercontroller {
         log.info("订单支付：{}", ordersPaymentDTO);
         OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
         log.info("生成预支付交易单：{}", orderPaymentVO);
+        orderService.paySuccess(ordersPaymentDTO.getOrderNumber());
         return Result.success(orderPaymentVO);
     }
     @GetMapping("/reminder/{id}")
