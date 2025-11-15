@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class DishController {
     RedisTemplate redisTemplate;
     @PostMapping
     @ApiOperation(value = "新增菜品")
+    @CacheEvict(cacheNames = "dishcache",allEntries = true)
     public Result<String> save(@RequestBody DishDTO dishDTO){
         dishService.saveWithFlavor(dishDTO);
         return Result.success();
@@ -39,9 +41,10 @@ public class DishController {
     }
     @DeleteMapping()
     @ApiOperation(value = "批量删除")
+    @CacheEvict(cacheNames = "dishcache",allEntries = true)
     public Result<String> deleteDish(@RequestParam List<Long> ids){
         dishService.deleteBatch(ids);
-        deleteRedis("dish_*");
+       // deleteRedis("dish_*");
         return Result.success();
     }
     @GetMapping("/{id}")
@@ -53,9 +56,10 @@ public class DishController {
     }
     @PutMapping()
     @ApiOperation(value = "修改菜品及其口味")
+    @CacheEvict(cacheNames = "dishcache",allEntries = true)
     public Result updateWithFlavor(@RequestBody DishDTO dishDTO){
         dishService.updateWithFlavor(dishDTO);
-        deleteRedis("dish_*");
+        //deleteRedis("dish_*");
         return Result.success();
     }
 

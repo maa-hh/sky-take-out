@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController("adminSetmealController")
 @RequestMapping("/admin/setmeal")
-@Api(tags = "C")
+@Api(tags = "套餐接口")
 public class SetmealController {
     @Autowired
     private SetmealService setmealService;
@@ -33,7 +33,7 @@ public class SetmealController {
     }
     @GetMapping("/page")
     @ApiOperation(value = "分页查询")
-    public Result<PageResult> page(@RequestBody SetmealPageQueryDTO setmealPageQueryDTO){
+    public Result<PageResult> page(SetmealPageQueryDTO setmealPageQueryDTO){
         PageResult pageResult=setmealService.pagequery(setmealPageQueryDTO);
         return Result.success(pageResult);
     }

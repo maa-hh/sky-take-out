@@ -67,12 +67,8 @@ public class SetmealServiceImpl implements SetmealService {
         // 1. 启动分页
         PageHelper.startPage(setmealPageQueryDTO.getPage(), setmealPageQueryDTO.getPageSize());
 
-        // 2. 构造条件对象
-        Setmeal setmeal = new Setmeal();
-        BeanUtils.copyProperties(setmealPageQueryDTO, setmeal);
-
         // 3. 执行分页查询
-        Page<Setmeal> page = (Page<Setmeal>) setmealMapper.list(setmeal);
+        Page<Setmeal> page = setmealMapper.querypage(setmealPageQueryDTO);
 
         // 4. 封装分页结果
         PageResult pageResult = new PageResult();

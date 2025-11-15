@@ -28,7 +28,7 @@ public interface CategoryMapper {
      * @param categoryPageQueryDTO
      * @return
      */
-    Page<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+    Page<Category> pageQuery(CategoryPageQueryDTO category);
 
     /**
      * 根据id删除分类

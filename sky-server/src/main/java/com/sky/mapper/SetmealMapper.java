@@ -1,6 +1,8 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
+import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.enumeration.OperationType;
@@ -42,8 +44,8 @@ public interface SetmealMapper {
             "from setmeal_dish sd left join dish d on sd.dish_id = d.id " +
             "where sd.setmeal_id = #{setmealId}")
     List<DishItemVO> getDishItemBySetmealId(Long setmealId);
-    @Insert("insert into setmeal (name, price, status, description, image) " +
-            "values (#{name}, #{price}, #{status}, #{description}, #{image})")
+    @Insert("insert into setmeal (category_id,name, price, status, description, image) " +
+            "values (#{categoryId},#{name}, #{price}, #{status}, #{description}, #{image})")
     @AutoFill(value = OperationType.INSERT)
     void insert(Setmeal setmeal);
     @Insert("insert into setmeal_dish(setmeal_id,dish_id,name,price,copies) values (#{setmealId},#{dishId},#{name},#{price},#{copies})")
@@ -63,4 +65,7 @@ public interface SetmealMapper {
      * @return
      */
     Integer countByMap(Map map);
+
+
+    Page<Setmeal> querypage(SetmealPageQueryDTO setmealPageQueryDTO);
 }
