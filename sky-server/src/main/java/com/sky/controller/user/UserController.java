@@ -1,5 +1,6 @@
 package com.sky.controller.user;
 
+import com.alibaba.fastjson.JSON;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.UserLoginDTO;
 import com.sky.entity.*;
@@ -10,6 +11,7 @@ import com.sky.utils.JwtUtil;
 import com.sky.vo.UserLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user/user")
 @Api(tags = "用户面接口")
+@Slf4j
 public class UserController {
     @Autowired
     UserService userService;
@@ -30,6 +33,7 @@ public class UserController {
     @ApiOperation(value = "登录")
     @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
+        log.info(JSON.toJSONString(userLoginDTO));
         User user=userService.login(userLoginDTO);
         Map<String,Object> claim=new HashMap<>();
         claim.put(JwtClaimsConstant.USER_ID,user.getId());
