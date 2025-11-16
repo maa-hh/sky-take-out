@@ -35,7 +35,7 @@ public interface OrderMapper {
 
     Double sumbymap(Map m);
 
-    int ordersumBymap(Map m);
+    Integer ordersumBymap(Map m);
 
     Page<Orders> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO);
 
@@ -55,4 +55,5 @@ public interface OrderMapper {
     @Update("update orders set status = #{status} where id = #{id}")
     void complete(@Param("id") Long id,@Param("status") Integer status);
 
+    Double sumamount(Map<String, Object> m);
 }

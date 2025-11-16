@@ -27,29 +27,37 @@ public class ReportController {
     ReportService reportService;
     @GetMapping("/turnoverStatistics")
     @ApiOperation(value = "营业额统计")
-    public Result<TurnoverReportVO> turnoverStatistics(@DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate begin ,
-                                                       @DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate end ){
+    public Result<TurnoverReportVO> turnoverStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                           LocalDate begin ,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                       LocalDate end ){
         TurnoverReportVO turnoverReportVO=reportService.turnoverStatistics(begin,end);
         return Result.success(turnoverReportVO);
 }
     @GetMapping("/userStatistics")
     @ApiOperation(value = "用户数量统计")
-    public Result<UserReportVO> userStatistics(@DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate begin ,
-                                               @DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate end){
+    public Result<UserReportVO> userStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                   LocalDate begin ,
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                               LocalDate end){
         UserReportVO userReportVO=reportService.userStatistics(begin,end);
         return Result.success(userReportVO);
     }
     @GetMapping("/ordersStatistics")
     @ApiOperation(value = "订单数量统计")
-    public Result<OrderReportVO> orderStatistics(@DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate begin ,
-                                                 @DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate end){
+    public Result<OrderReportVO> orderStatistics(@DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                     LocalDate begin ,
+                                                 @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                 LocalDate end){
         OrderReportVO orderReportVO=reportService.orderStatistics(begin,end);
         return Result.success(orderReportVO);
     }
     @GetMapping("/top10")
     @ApiOperation(value = "销量数量统计")
-    public Result<SalesTop10ReportVO> salesTop10Statistics(@DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate begin ,
-                                                           @DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate end){
+    public Result<SalesTop10ReportVO> salesTop10Statistics(@DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                               LocalDate begin ,
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                           LocalDate end){
         SalesTop10ReportVO goodsSales=reportService.salesTop10Statistics(begin,end);
         return Result.success(goodsSales);
     }
