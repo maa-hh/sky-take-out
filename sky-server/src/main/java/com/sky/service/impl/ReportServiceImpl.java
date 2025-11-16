@@ -186,9 +186,7 @@ public class ReportServiceImpl implements ReportService {
                         LocalDateTime.of(begin, LocalTime.MIN),
                         LocalDateTime.of(end, LocalTime.MAX)
                 );
-        for(GoodsSalesDTO goodsSalesDTO1:goodsSalesDTO){
-            System.out.println(goodsSalesDTO1.getName()+" "+goodsSalesDTO1.getNumber());
-        }
+//        类名::实例方法 会被推断为 (对象实例) -> 对象实例.方法()，因此 map 会对流中每个对象自动调用 getName()。
         List<String> nameList = goodsSalesDTO.stream()
                 .map(GoodsSalesDTO::getName)
                 .collect(Collectors.toList());

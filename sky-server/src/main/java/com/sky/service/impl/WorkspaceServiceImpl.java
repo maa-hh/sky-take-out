@@ -134,6 +134,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Integer sold = dishMapper.countByMap(map);
 
         map.put("status", StatusConstant.DISABLE);
+
         Integer discontinued = dishMapper.countByMap(map);
 
         return DishOverViewVO.builder()
