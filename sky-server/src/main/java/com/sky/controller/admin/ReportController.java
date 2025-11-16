@@ -39,14 +39,14 @@ public class ReportController {
         UserReportVO userReportVO=reportService.userStatistics(begin,end);
         return Result.success(userReportVO);
     }
-    @GetMapping("/orderStatistics")
+    @GetMapping("/ordersStatistics")
     @ApiOperation(value = "订单数量统计")
     public Result<OrderReportVO> orderStatistics(@DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate begin ,
                                                  @DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate end){
         OrderReportVO orderReportVO=reportService.orderStatistics(begin,end);
         return Result.success(orderReportVO);
     }
-    @GetMapping("/salesStatistics")
+    @GetMapping("/top10")
     @ApiOperation(value = "销量数量统计")
     public Result<SalesTop10ReportVO> salesTop10Statistics(@DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate begin ,
                                                            @DateTimeFormat(pattern = "YYYY-mm-dd")LocalDate end){

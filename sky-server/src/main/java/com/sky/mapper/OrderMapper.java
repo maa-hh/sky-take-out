@@ -1,8 +1,13 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
+import com.sky.dto.OrdersConfirmDTO;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,4 +36,23 @@ public interface OrderMapper {
     Double sumbymap(Map m);
 
     int ordersumBymap(Map m);
+
+    Page<Orders> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    Integer orderstatusNum(int i);
+    @Update("update orders set status = #{status} where id = #{id}")
+    void confirm(@Param("id") Long id,@Param("status") Integer status);
+
+    @Update("update orders set rejection_reason = #{rejectionReason}, status = #{status} where id = #{id}")
+    void reject(@Param("id") Long id, @Param("rejectionReason") String rejectionReason,@Param("status") Integer status);
+
+    @Update("update orders set cancel_reason = #{cancelReason}, status = #{status} where id = #{id}")
+    void cancel(@Param("id") Long id, @Param("cancelReason") String cancelReason,@Param("status") Integer status);
+
+    @Update("update orders set status = #{status} where id = #{id}")
+    void delivery(@Param("id") Long id,@Param("status") Integer status);
+
+    @Update("update orders set status = #{status} where id = #{id}")
+    void complete(@Param("id") Long id,@Param("status") Integer status);
+
 }

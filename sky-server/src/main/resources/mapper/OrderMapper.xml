@@ -85,7 +85,7 @@
         </where>
     </select>
     <select id="ordersumBymap" resultType="java.lang.Integer">
-        select sum(id) from orders
+        select count(id) from orders
         <where>
             <if test="begin !=null">
                 and order_time &gt;#{begin}
@@ -97,6 +97,33 @@
                 and status=#{status}
             </if>
         </where>
+    </select>
+    <select id="conditionSearch" resultType="com.sky.entity.Orders">
+        select * from orders
+        <where>
+            <if test="number !=null">
+                and number=#{number}
+            </if>
+            <if test="phone !=null">
+                and phone=#{phone}
+            </if>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+            <if test="beginTime!=null">
+                and order_time gt;#{beginTime}
+            </if>
+            <if test="endTime!=null">
+                and order_time lt;#{endTime}
+            </if>
+            <if test="userId!=null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+    <select id="orderstatusNum" resultType="java.lang.Integer">
+        select count(*) from orders
+        where status = #{status};
     </select>
 </mapper>
 

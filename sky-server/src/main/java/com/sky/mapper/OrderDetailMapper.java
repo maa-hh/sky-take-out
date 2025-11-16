@@ -3,6 +3,7 @@ package com.sky.mapper;
 import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.OrderDetail;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,4 +17,6 @@ public interface OrderDetailMapper {
     void batchinsert(List<OrderDetail> orderDetailList);
 
     List<GoodsSalesDTO> dishsalsenum(LocalDateTime begin, LocalDateTime end);
+    @Select("select * from order_detail where order_id=#{id}")
+    List<OrderDetail> getById(Long id);
 }
