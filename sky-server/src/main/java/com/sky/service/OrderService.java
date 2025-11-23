@@ -39,4 +39,7 @@ public interface OrderService {
     void delivery(Long id);
 
     void complete(Long id);
+
+    void refundSuccess(String refundNo);
+    public void refund(OrdersPaymentDTO ordersPaymentDTO) throws Exception;
 }

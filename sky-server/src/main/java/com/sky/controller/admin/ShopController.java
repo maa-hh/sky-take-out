@@ -18,15 +18,15 @@ public class ShopController {
     public static final String status="shop_status";
     @PutMapping("/{s}")
     @ApiOperation(value = "修改店铺营业状态")
-    public Result setStatus(@PathVariable String s){
+    public Result setStatus(@PathVariable Integer s){
         redisTemplate.opsForValue().set(status,s);
         return Result.success(s);
     }
     @GetMapping("/status")
     @ApiOperation(value = "管理端获取店铺状态")
-    public Result<String> getStatus(){
-        String status1=(String)redisTemplate.opsForValue().get(status);
-        log.info(status1);
+    public Result<Integer> getStatus(){
+        Integer status1=(Integer)redisTemplate.opsForValue().get(status);
+        log.info(""+status1);
 
         return Result.success(status1);
     }

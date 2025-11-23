@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sky.context.BaseContext.threadLocal;
+
 /**
  * 员工管理
  */
@@ -73,6 +75,7 @@ public class EmployeeController {
     @PostMapping("/logout")
     @ApiOperation(value = "退出登录")
     public Result<String> logout() {
+        threadLocal.remove();
         return Result.success();
     }
 

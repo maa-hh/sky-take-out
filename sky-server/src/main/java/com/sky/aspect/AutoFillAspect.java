@@ -29,10 +29,8 @@ public class AutoFillAspect {
     public void autoFill(JoinPoint joinPoint) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         // 获取方法签名
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-
         // 获取方法
         Method method = signature.getMethod();
-
         // 获取注解
         AutoFill autoFill = method.getAnnotation(AutoFill.class);
         if (autoFill != null) {

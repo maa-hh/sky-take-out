@@ -41,6 +41,14 @@ public class Ordercontroller {
         orderService.paySuccess(ordersPaymentDTO.getOrderNumber());
         return Result.success(orderPaymentVO);
     }
+    @PutMapping("/refund")
+    @ApiOperation("订单支付")
+    public Result refund(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+        log.info("退款：{}", ordersPaymentDTO);
+        orderService.refund(ordersPaymentDTO);
+        orderService.refundSuccess(ordersPaymentDTO.getOrderNumber());
+        return Result.success();
+    }
     @GetMapping("/reminder/{id}")
     @ApiOperation(value = "催单提醒")
     public Result reminder(@PathVariable Long id){

@@ -4,10 +4,12 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import com.aliyun.oss.model.GetObjectRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 @Data
 @AllArgsConstructor
@@ -65,4 +67,34 @@ public class AliOssUtil {
 
         return stringBuilder.toString();
     }
+    public static void downloadOssImage(
+            String endpoint,
+            String accessKeyId,
+            String accessKeySecret,
+            String bucketName,
+            String objectName,
+            String localFilePath) {
+
+        // 1. 创建 OSS 客户端
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        try {
+            // 2. 下载 OSS 文件（图片）
+            File localFile = new File(localFilePath);
+
+            // getObject 会自动把文件下载到本地指定位置
+            ossClient.getObject(new GetObjectRequest(bucketName, objectName), localFile);
+            //OSSObject ossObject = ossClient.getObject(bucketName, "images/cat.jpg");
+            //byte[] bytes = ossObject.getObjectContent().readAllBytes(); inputstream->bytes
+
+            System.out.println("文件下载成功：" + localFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("下载失败：" + e.getMessage());
+        } finally {
+            // 3. 关闭客户端
+            if (ossClient != null) ossClient.shutdown();
+        }
+    }
+
 }

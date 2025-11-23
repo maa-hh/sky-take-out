@@ -50,49 +50,62 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderSubmitVO order(OrdersSubmitDTO ordersSubmitDTO) {
-        OrderSubmitVO orderSubmitVO=new OrderSubmitVO();
 
-        AddressBook addressBook=new AddressBook();
-        addressBook.setId(ordersSubmitDTO.getAddressBookId());
-        List<AddressBook> list = addressBookMapper.list(addressBook);
-        if(list==null||list.size()==0)
+        OrderSubmitVO orderSubmitVO = new OrderSubmitVO();
+
+        // 1. 获取地址
+        AddressBook query = new AddressBook();
+        query.setId(ordersSubmitDTO.getAddressBookId());
+        List<AddressBook> list = addressBookMapper.list(query);
+        if (list == null || list.isEmpty())
             throw new AddressBookBusinessException("地址为空或不存在");
 
-        ShoppingCart shoppingCart=new ShoppingCart();
-        shoppingCart.setUserId(BaseContext.getCurrentId());
-        List<ShoppingCart> shoppingCarts = shoppingCartMapper.get(shoppingCart);
-        if(shoppingCarts==null||shoppingCarts.size()==0)
-            throw new ShoppingCartBusinessException("购物车商品为空");
+        AddressBook addressBook = list.get(0);
 
-        Orders orders=new Orders();
-        BeanUtils.copyProperties(ordersSubmitDTO,orders);
+        // 2. 获取购物车
+        ShoppingCart cartQuery = new ShoppingCart();
+        cartQuery.setUserId(BaseContext.getCurrentId());
+        List<ShoppingCart> shoppingCarts = shoppingCartMapper.get(cartQuery);
+        if (shoppingCarts == null || shoppingCarts.isEmpty())
+            throw new ShoppingCartBusinessException("购物车为空");
+
+        // 3. 生成订单
+        Orders orders = new Orders();
+        BeanUtils.copyProperties(ordersSubmitDTO, orders);
         orders.setOrderTime(LocalDateTime.now());
         orders.setPayStatus(Orders.UN_PAID);
         orders.setStatus(Orders.PENDING_PAYMENT);
-        orders.setNumber(new String().valueOf(System.currentTimeMillis()));
+        orders.setNumber(String.valueOf(System.currentTimeMillis()));
         orders.setPhone(addressBook.getPhone());
         orders.setUserId(BaseContext.getCurrentId());
         orders.setConsignee(addressBook.getConsignee());
         orders.setAddress(addressBook.getDetail());
+
         orderMapper.insert(orders);
+        // 4. 生成订单明细
+        List<OrderDetail> detailList = new ArrayList<>();
 
-        List<OrderDetail> orderDetailList=new ArrayList<>();
-        for(ShoppingCart shoppingCart1:shoppingCarts){
-            OrderDetail orderDetail=new OrderDetail();
-            BeanUtils.copyProperties(shoppingCart1,orderDetail);
-            orderDetail.setOrderId(orders.getId());
-            orderDetailList.add(orderDetail);
+        for (ShoppingCart sc : shoppingCarts) {
+            OrderDetail detail = new OrderDetail();
+            BeanUtils.copyProperties(sc, detail);
+            detail.setOrderId(orders.getId());
+            detailList.add(detail);
         }
-        orderDetailMapper.batchinsert(orderDetailList);
-        shoppingCartMapper.delete(shoppingCart);
 
+        orderDetailMapper.batchinsert(detailList);
+
+        // 5. 清空购物车
+        shoppingCartMapper.delete(cartQuery);
+
+        // 6. 返回前端
         orderSubmitVO.setId(orders.getId());
-        orderSubmitVO.setOrderTime(LocalDateTime.now());
+        orderSubmitVO.setOrderTime(orders.getOrderTime());
         orderSubmitVO.setOrderNumber(orders.getNumber());
-        orderSubmitVO.getOrderAmount();
+        orderSubmitVO.setOrderAmount(orders.getAmount());
 
         return orderSubmitVO;
     }
+
     /**
      * 订单支付
      *
@@ -112,16 +125,29 @@ public class OrderServiceImpl implements OrderService {
 //                user.getOpenid() //微信用户的openid
 //        );
         JSONObject jsonObject=new JSONObject();
-        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-            throw new OrderBusinessException("该订单已支付");
-        }
+//        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
+//            throw new OrderBusinessException("该订单已支付");
+//        }
 
         OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
         vo.setPackageStr(jsonObject.getString("package"));
 
         return vo;
     }
+    @Override
+    public void refund(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+        // 当前登录用户id
+        Long userId = BaseContext.getCurrentId();
+        User user = userMapper.getByOpenid(String.valueOf(userId));
 
+        //调用微信支付接口，退款
+        String mess = weChatPayUtil.refund(
+                ordersPaymentDTO.getOrderNumber(), //商户订单号
+                ordersPaymentDTO.getOrderNumber(),
+                new BigDecimal(0.01), //支付金额，单位 元
+                new BigDecimal(0.01)
+        );
+    }
     /**
      * 支付成功，修改订单状态
      *
@@ -148,7 +174,20 @@ public class OrderServiceImpl implements OrderService {
         String message=JSON.toJSONString(m);
         webSocketServer.sendToAllClient(message);
     }
+    @Override
+    public void refundSuccess(String refundNo) {
+        Orders ordersDB = orderMapper.getByNumber(refundNo);
 
+        // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
+        Orders orders = Orders.builder()
+                .id(ordersDB.getId())
+                .status(Orders.CANCELLED)
+                .payStatus(Orders.CANCELLED)
+                .checkoutTime(LocalDateTime.now())
+                .build();
+
+        orderMapper.update(orders);
+    }
     @Override
     public void reminder(Long id) {
         Orders order=orderMapper.getById(id);
@@ -218,5 +257,7 @@ public class OrderServiceImpl implements OrderService {
     public void complete(Long id) {
         orderMapper.complete(id,Orders.COMPLETED);
     }
+
+
 
 }

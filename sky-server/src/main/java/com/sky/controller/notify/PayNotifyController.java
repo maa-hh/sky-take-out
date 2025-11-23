@@ -58,7 +58,29 @@ public class PayNotifyController {
         //给微信响应
         responseToWeixin(response);
     }
+    @RequestMapping("/refundSuccess")
+    public void refundSuccessNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        //读取数据
+        String body = readData(request);
+        log.info("退款成功回调：{}", body);
 
+        //数据解密
+        String plainText = decryptData(body);
+        log.info("解密后的文本：{}", plainText);
+
+        JSONObject jsonObject = JSON.parseObject(plainText);
+        String refundNo = jsonObject.getString("out_refund_no");
+        String refundStatus = jsonObject.getString("refund_status");
+
+        log.info("商户平台订单号：{}", refundNo);
+        log.info("微信支付交易号：{}", refundStatus);
+
+        //业务处理，修改订单状态、来单提醒
+        orderService.refundSuccess(refundNo);
+
+        //给微信响应
+        responseToWeixin(response);
+    }
     /**
      * 读取数据
      *

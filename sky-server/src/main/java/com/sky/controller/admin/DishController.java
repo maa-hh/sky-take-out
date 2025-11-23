@@ -51,23 +51,23 @@ public class DishController {
         return Result.success();
     }
     @GetMapping("/{id}")
-    @ApiOperation(value = "根据菜品id回显信息")
-    public Result<DishVO> getDishId(Long categoryId){
+    @ApiOperation(value = "根据dishId回显信息")
+    public Result<DishVO> getDishId(Long Id){
         log.info("");
-        DishVO dishVO= dishService.getDishId(categoryId);
+        DishVO dishVO= dishService.getDishId(Id);
         return Result.success(dishVO);
     }
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")
     @Cacheable(cacheNames = "dishcache",key = "#categoryId")
     public Result<List<DishVO>> list(Long categoryId) {
-        String key="dish_id"+categoryId;
-        List<DishVO> list=(List<DishVO>) redisTemplate.opsForValue().get(key);
-        if(list!=null&&!list.isEmpty()) return Result.success(list);
+//        String key="dishcache::"+categoryId;
+//        List<DishVO> list=(List<DishVO>) redisTemplate.opsForValue().get(key);
+//        if(list!=null&&!list.isEmpty()) return Result.success(list);
         Dish dish = new Dish();
         dish.setCategoryId(categoryId);
         dish.setStatus(StatusConstant.ENABLE);//查询起售中的菜品
-        list= dishService.listWithFlavor(dish);
+        List<DishVO> list= dishService.listWithFlavor(dish);
         return Result.success(list);
     }
     @PutMapping()

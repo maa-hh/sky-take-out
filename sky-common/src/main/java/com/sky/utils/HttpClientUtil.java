@@ -51,7 +51,7 @@ public class HttpClientUtil {
 
             //创建GET请求
             HttpGet httpGet = new HttpGet(uri);
-
+            httpGet.setConfig(builderRequestConfig());
             //发送请求
             response = httpClient.execute(httpGet);
 
@@ -171,9 +171,9 @@ public class HttpClientUtil {
     }
     private static RequestConfig builderRequestConfig() {
         return RequestConfig.custom()
-                .setConnectTimeout(TIMEOUT_MSEC)
-                .setConnectionRequestTimeout(TIMEOUT_MSEC)
-                .setSocketTimeout(TIMEOUT_MSEC).build();
+                .setConnectTimeout(TIMEOUT_MSEC)//连接超时
+                .setConnectionRequestTimeout(TIMEOUT_MSEC)//请求池连接超时
+                .setSocketTimeout(TIMEOUT_MSEC).build();//读取超时
     }
 
 }

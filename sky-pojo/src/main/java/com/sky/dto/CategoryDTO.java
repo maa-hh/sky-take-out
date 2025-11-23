@@ -1,10 +1,12 @@
 package com.sky.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
 @Data
+//@EqualsAndHashCode(of = {"id", "code"})
 public class CategoryDTO implements Serializable {
 
     //主键
